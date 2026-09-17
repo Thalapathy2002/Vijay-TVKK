@@ -1,0 +1,37 @@
+AI Intern – Job Description
+
+Responsibilities
+
+Build AI-powered applications using Large Language Models (LLMs).
+Develop AI agents and workflow automations.
+Design prompts and evaluate AI model responses.
+Integrate AI APIs (OpenAI, Gemini, Claude, etc.) into applications.
+Build Retrieval-Augmented Generation (RAG) pipelines using vector databases.
+Research new AI tools, frameworks, and best practices.
+Test, debug, and optimize AI solutions.
+Collaborate with developers and product teams to deliver AI features.
+
+Required Skills
+
+Strong Python programming.
+Understanding of Generative AI and LLMs.
+Prompt engineering.
+Basic knowledge of machine learning concepts.
+Familiarity with REST APIs.
+Git and GitHub.
+Good problem-solving and communication skills.
+
+Preferred Skills
+
+LangChain or LlamaIndex.
+FastAPI or Flask.
+Vector databases (FAISS, ChromaDB, Pinecone, or Qdrant).
+SQL and basic cloud platforms (AWS, Azure, or GCP).
+Experience building AI chatbots or automation tools.
+
+What You'll Gain
+
+Hands-on experience building production AI applications.
+Mentorship from AI engineers.
+Exposure to real client projects.
+Opportunity for a full-time role based on performance.

@@ -1,0 +1,126 @@
+Here’s a clean summary of the full discussion and what was built:
+
+🧠 MCP → KnowCore API Integration (Full Chat Summary)
+🎯 Goal
+
+You were upgrading a KnowLens MCP server (Claude Desktop MCP) from:
+
+❌ Neon/Postgres local access
+❌ Static credentials / DB-based auth
+❌ stdio-only execution
+
+to:
+
+✅ API-driven architecture (KnowCore API bridge)
+✅ multi-user authentication via API keys
+✅ containerized + production deployment
+✅ HTTP transport + reverse proxy (Caddy + TLS)
+🏗️ Final Architecture Built
+🌐 Deployment Architecture
+Client / Claude Desktop
+        ↓
+   HTTPS (TLS)
+     Caddy
+        ↓ (HTTP internal)
+   MCP Server (Docker :3005)
+        ↓
+   KnowCore API (/v1/knowcore/*)
+🔐 Authentication Model (Final)
+Before (bad)
+Static API key
+DB-based auth
+Stdio-only login assumptions
+No user separation
+After (final design)
+✅ Per-user API key (copk_live_)
+
+✅ Issued via:
+
+POST /api/auth/api-keys/exchange
+
+✅ Stored in:
+
+~/.knowlens/auth.json
+✅ Mounted into container (Option A)
+
+✅ Sent as:
+
+Authorization: Bearer <key>
+x-workspace-slug: <workspace>
+🧩 MCP Changes Done
+1. Transport upgrade
+❌ Stdio removed
+✅ Replaced with HTTP Streamable MCP server
+Endpoint: /mcp on port 3005
+2. Authentication redesign
+
+CLI login added:
+
+knowlens login
+Stores token locally
+MCP loads token at startup
+Fail-fast if missing
+3. Security hardening added
+
+Implemented:
+
+Session TTL + eviction
+Request body size limit (1MB)
+Constant-time token validation
+DNS rebinding protection (optional)
+LRU session cap
+4. Containerization (Option A)
+Token NOT inside image
+Mounted from host:
+-v ~/.knowlens/auth.json:/run/secrets/knowlens_auth:ro
+Overridable path:
+KNOWLENS_AUTH_FILE
+🐳 Docker + Production Setup
+MCP container
+
+Runs on:
+
+0.0.0.0:3005
+Internal only (no public exposure)
+Caddy reverse proxy (NEW)
+Responsibilities:
+TLS termination (HTTPS)
+Reverse proxy to MCP
+Public entrypoint
+Final docker architecture
+Caddy (443 HTTPS)
+   ↓
+MCP container (3005 HTTP internal)
+   ↓
+KnowCore API
+📦 Files added/changed
+New
+src/cli.ts → login CLI
+src/auth/store.ts → auth cache manager
+Caddyfile
+updated docker-compose.yml
+Modified
+MCP transport → HTTP server
+auth → token-based only
+Dockerfile → containerized runtime model
+environment → API-first config
+⚠️ Remaining Risks / Gaps
+Not fully production-safe yet (without your infra):
+⚠️ TLS depends on Caddy (external layer)
+⚠️ First real KnowCore API login still unverified
+⚠️ 12 schema.md tests still failing (pre-existing issue)
+⚠️ No real-world load test yet
+🚀 Final Result
+
+You now have:
+
+✔ Production-style system
+HTTP MCP server
+API-driven auth
+Multi-user support via API keys
+Dockerized deployment
+TLS via Caddy reverse proxy
+Clean separation of concerns
+🧾 One-line summary
+
+You transformed a local stdio MCP + Postgres system into a production-ready, API-driven, multi-user HTTP MCP service secured behind Docker + Caddy with TLS and per-user authentication.
